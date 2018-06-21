@@ -1,0 +1,96 @@
+<script type="text/javascript">
+	$(document).ready(
+			function() {
+
+				$("#stdCourseSelectId").on(
+						"change",
+						function() {
+							var stdCourseSelectId = $("#stdCourseSelectId")
+									.val();
+							$("#error").text("");
+							$.ajax({
+								url : "checkCourseURL",
+								data : {
+
+									stdCourseSelectId : stdCourseSelectId
+								},
+								success : function(data) {
+
+									/* $.each(data, function(index, value) {
+										console.log(data);
+										var row = $(
+												"<tr><td>"+ value.courseId+ "</td>"
+												          + "<td>" + value.courseName+ "</td><td>"
+												     	  + value.courseDuration+ "</td><td>"
+												          + value.courseFee+ "</td><td>"
+												          + value.courseSpecialFee+ "</td><td>"
+												          + value.courseExamFee+ "</td><td>"
+												          + value.courseLibraryFee+ "</td></tr>");
+										$("#orderMsg").append(row).removeClass("hidden");
+									}) */
+
+									$("#courseMsg").text(data);
+								}
+							});
+						});
+
+			});
+</script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+
+				$("#stdCourseSelectId").on(
+						"change",
+						function() {
+							var stdCourseSelectId = $("#stdCourseSelectId")
+									.val();
+							$("#error").text("");
+							$.ajax({
+								url : "checkCourseURL",
+								data : {
+
+									stdCourseSelectId : stdCourseSelectId
+								},
+								success : function(data) {
+
+									var obj = JSON.parse(data);
+
+									$("#ajaxResponse").html("");
+									$("#ajaxResponse").append("<table border='2px'>");
+									$("#ajaxResponse").append("<tr><td>course id </td><td> <input type='text' value='" + obj.courseId + "' readonly='true'/></td>");
+									$("#ajaxResponse").append("<tr><td>course Name</td><td><input type='text' value='" + obj.courseName + "' readonly='true'/></td></tr>");
+									$("#ajaxResponse").append("<input type='text' value='" + obj.courseDuration + "' readonly='true'/><br/>");
+									$("#ajaxResponse").append("<input type='text' value='" + obj.courseFee + "' readonly='true'/><br/>");
+									$("#ajaxResponse").append("<input type='text' value='" + obj.courseSpecialFee + "' readonly='true'/><br/>");
+									$("#ajaxResponse").append("<input type='text' value='" + obj.courseExamFee + "' readonly='true'/><br/>");
+									$("#ajaxResponse").append("<input type='text' value='" + obj.courseLibraryFee + "' readonly='true'/><br/>");
+									$("#ajaxResponse").append("</img src='../imgs/clg01.jpg' alt='sample img'");
+									$("#ajaxResponse").append("</table>");
+									$("#courseMsg").text(data);
+								}
+							});
+						});
+
+			});
+</script>
+
+
+@RequestMapping("/checkCourseURL")
+	public @ResponseBody
+	String ajaxCallingStudentCourseDetails(
+			@RequestParam("stdCourseSelectId") String stdCourseSelectId)
+			throws JsonGenerationException, JsonMappingException, IOException {
+
+		Course course = courseUtil.getCousreDetails(stdCourseSelectId);
+
+		System.out.println("Mahi : " + course);
+
+		ObjectMapper mapper = new ObjectMapper();
+		
+		
+
+		String json = mapper.writeValueAsString(course);
+
+		return json;
+	}
